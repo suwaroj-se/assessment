@@ -1,7 +1,7 @@
 package expense
 
 func Create(s string) string {
-	output := `{
+	jsonOutput := `{
 		"id": "1",
 		"title": "strawberry smoothie",
 		"amount": 79,
@@ -9,5 +9,5 @@ func Create(s string) string {
 		"tags": ["food", "beverage"]
 	}`
 
-	return output
+	return jsonOutput
 }

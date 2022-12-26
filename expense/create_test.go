@@ -11,6 +11,7 @@ func TestCreate(t *testing.T) {
 		"note": "night market promotion discount 10 bath", 
 		"tags": ["food", "beverage"]
 	}`
+
 	want := `{
 		"id": "1",
 		"title": "strawberry smoothie",
