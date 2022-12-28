@@ -19,17 +19,6 @@ func TestCreateExpense(t *testing.T) {
 		"note": "night market promotion discount 10 bath", 
 		"tags": ["food", "beverage"]
 	}`
-	// e := echo.New()
-	// req := httptest.NewRequest(http.MethodPost, "/expenses", strings.NewReader(reqInput))
-	// req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-	// rec := httptest.NewRecorder()
-	// c := e.NewContext(req, rec)
-
-	// db, mock, err := sqlmock.New()
-	// if err != nil {
-	// 	t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
-	// }
-	// defer db.Close()
 
 	t.Run("Create expenses succecss", func(t *testing.T) {
 		e := echo.New()
@@ -92,6 +81,30 @@ func TestCreateExpense(t *testing.T) {
 		if assert.NoError(t, con.CreateExpenseHadler(c)) {
 
 			assert.Equal(t, http.StatusInternalServerError, rec.Code)
+
+		}
+	})
+
+	t.Run("Bad request post with wrong input", func(t *testing.T) {
+		wrongInput := `[]`
+		e := echo.New()
+		req := httptest.NewRequest(http.MethodPost, "/expenses", strings.NewReader(wrongInput))
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+
+		db, mock, err := sqlmock.New()
+		if err != nil {
+			t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+		}
+		defer db.Close()
+
+		mock.ExpectQuery("INSERT INTO expenses").WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(1))
+
+		con := Conn{db}
+		if assert.NoError(t, con.CreateExpenseHadler(c)) {
+
+			assert.Equal(t, http.StatusBadRequest, rec.Code)
 
 		}
 	})
