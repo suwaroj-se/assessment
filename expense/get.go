@@ -2,24 +2,16 @@ package expense
 
 import (
 	"database/sql"
-	"log"
 	"net/http"
 
-	"github.com/lib/pq"
-
 	"github.com/labstack/echo/v4"
+	"github.com/lib/pq"
 )
 
 func (con *Conn) GetExpenseHadlerByID(c echo.Context) error {
-	stmt, err := con.DB.Prepare("SELECT id, title, amount, note, tags FROM expenses WHERE id=$1;")
-	if err != nil {
-		log.Fatal("can't prepare query one users statment", err)
-	}
-
-	rowID := c.Param("id")
-	row := stmt.QueryRow(rowID)
+	row := con.DB.QueryRow("SELECT id, title, amount, note, tags FROM expenses WHERE id=$1", c.Param("id"))
 	var ex Expenses
-	err = row.Scan(&ex.ID, &ex.Title, &ex.Amount, &ex.Note, pq.Array(&ex.Tags))
+	err := row.Scan(&ex.ID, &ex.Title, &ex.Amount, &ex.Note, pq.Array(&ex.Tags))
 
 	switch err {
 	case sql.ErrNoRows:
