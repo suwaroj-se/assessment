@@ -59,6 +59,8 @@
 				
 				<option value="file1">github.com/suwaroj-se/assessment/expense/db.go (0.0%)</option>
 				
+				<option value="file2">github.com/suwaroj-se/assessment/expense/get.go (85.7%)</option>
+				
 				</select>
 			</div>
 			<div id="legend">
@@ -139,6 +141,33 @@ func InitDB() <span class="cov0" title="0">{
 func CloseDB() <span class="cov0" title="0">{
         db.Close()
 }</span>
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package expense
+
+import (
+        "database/sql"
+        "net/http"
+
+        "github.com/labstack/echo/v4"
+        "github.com/lib/pq"
+)
+
+func (con *Conn) GetExpenseHadlerByID(c echo.Context) error <span class="cov8" title="1">{
+        row := con.DB.QueryRow("SELECT id, title, amount, note, tags FROM expenses WHERE id=$1", c.Param("id"))
+        var ex Expenses
+        err := row.Scan(&amp;ex.ID, &amp;ex.Title, &amp;ex.Amount, &amp;ex.Note, pq.Array(&amp;ex.Tags))
+
+        switch err </span>{
+        case sql.ErrNoRows:<span class="cov8" title="1">
+                return c.JSON(http.StatusNotFound, Err{Message: "user not found"})</span>
+        case nil:<span class="cov8" title="1">
+                return c.JSON(http.StatusOK, ex)</span>
+        default:<span class="cov0" title="0">
+                return c.JSON(http.StatusInternalServerError, Err{Message: "can't scan user:" + err.Error()})</span>
+        }
+
+}
 </pre>
 		
 		</div>

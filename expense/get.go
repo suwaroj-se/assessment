@@ -15,11 +15,11 @@ func (con *Conn) GetExpenseHadlerByID(c echo.Context) error {
 
 	switch err {
 	case sql.ErrNoRows:
-		return c.JSON(http.StatusNotFound, Err{Message: "user not found"})
+		return c.JSON(http.StatusNotFound, Err{Message: "expenses not found"})
 	case nil:
 		return c.JSON(http.StatusOK, ex)
 	default:
-		return c.JSON(http.StatusInternalServerError, Err{Message: "can't scan user:" + err.Error()})
+		return c.JSON(http.StatusInternalServerError, Err{Message: "can't scan expenses:" + err.Error()})
 	}
 
 }
