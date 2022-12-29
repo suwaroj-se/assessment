@@ -86,4 +86,31 @@ func TestGETExpenseBYID(t *testing.T) {
 		}
 	})
 
+	t.Run("Error get expenses by id can't scan expenses", func(t *testing.T) {
+		e := echo.New()
+		req := httptest.NewRequest(http.MethodGet, "/", nil)
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetPath("/expenses/:id")
+		c.SetParamNames("id")
+		c.SetParamValues("1")
+
+		db, mock, err := sqlmock.New()
+		if err != nil {
+			t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+		}
+		defer db.Close()
+
+		mock.ExpectQuery("SELECT id, title, amount, note, tags FROM expenses").
+			WillReturnRows(sqlmock.NewRows([]string{"id"}).
+				AddRow(1))
+
+		con := Conn{db}
+		if assert.NoError(t, con.GetExpenseHadlerByID(c)) {
+
+			assert.Equal(t, http.StatusInternalServerError, rec.Code)
+		}
+	})
+
 }
