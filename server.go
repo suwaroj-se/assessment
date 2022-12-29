@@ -19,6 +19,8 @@ func main() {
 	e.Use(middleware.Recover())
 
 	e.POST("/expenses", expense.CreateExpenseHadler)
+	e.GET("/expenses/:id", expense.GetExpenseHadlerByID)
+
 	e.Start(os.Getenv("PORT"))
 
 	fmt.Println("Please use server.go for main file")

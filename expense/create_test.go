@@ -44,21 +44,18 @@ func TestCreateExpense(t *testing.T) {
 			"tags": ["food", "beverage"]
 		}`
 
-		err = json.Unmarshal([]byte(want), &w)
-		if err != nil {
+		if err = json.Unmarshal([]byte(want), &w); err != nil {
 			t.Fatal("Error convert 'want' with json.Unmarshall", err)
 		}
 
 		con := Conn{db}
 		if assert.NoError(t, con.CreateExpenseHadler(c)) {
-			err = json.Unmarshal(rec.Body.Bytes(), &g)
-			if err != nil {
+			if err = json.Unmarshal(rec.Body.Bytes(), &g); err != nil {
 				t.Fatal("Error convert 'rec.Body.Bytes' with json.Unmarshall", err)
 			}
 
 			assert.Equal(t, http.StatusCreated, rec.Code)
 			assert.Equal(t, w, g)
-
 		}
 	})
 
@@ -81,7 +78,6 @@ func TestCreateExpense(t *testing.T) {
 		if assert.NoError(t, con.CreateExpenseHadler(c)) {
 
 			assert.Equal(t, http.StatusInternalServerError, rec.Code)
-
 		}
 	})
 
@@ -105,7 +101,6 @@ func TestCreateExpense(t *testing.T) {
 		if assert.NoError(t, con.CreateExpenseHadler(c)) {
 
 			assert.Equal(t, http.StatusBadRequest, rec.Code)
-
 		}
 	})
 
