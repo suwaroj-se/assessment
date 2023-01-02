@@ -61,7 +61,7 @@
 				
 				<option value="file2">github.com/suwaroj-se/assessment/expense/get.go (100.0%)</option>
 				
-				<option value="file3">github.com/suwaroj-se/assessment/expense/put.go (93.3%)</option>
+				<option value="file3">github.com/suwaroj-se/assessment/expense/put.go (100.0%)</option>
 				
 				</select>
 			</div>
@@ -208,7 +208,7 @@ func (con *conDB) PutExpenseHandlerByID(c echo.Context) error <span class="cov8"
 
                 <span class="cov8" title="1">return c.JSON(http.StatusOK, ex)</span>
 
-        default:<span class="cov0" title="0">
+        default:<span class="cov8" title="1">
                 return c.JSON(http.StatusInternalServerError, Err{Message: "can't scan expenses:" + err.Error()})</span>
         }
 
