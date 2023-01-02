@@ -35,7 +35,7 @@ func TestCreateExpense(t *testing.T) {
 
 		mock.ExpectQuery("INSERT INTO expenses").WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(1))
 
-		var w, g Expenses
+		var w, g Expense
 		want := `{
 			"id": 1,
 			"title": "strawberry smoothie",

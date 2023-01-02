@@ -9,7 +9,7 @@ import (
 )
 
 func (con *conDB) PutExpenseHandlerByID(c echo.Context) error {
-	var ex Expenses
+	var ex Expense
 	if err := c.Bind(&ex); err != nil {
 		return c.JSON(http.StatusBadRequest, Err{Message: err.Error()})
 	}

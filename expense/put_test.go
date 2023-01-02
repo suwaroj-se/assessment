@@ -2,7 +2,6 @@ package expense
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -10,7 +9,6 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/labstack/echo/v4"
-	// "github.com/lib/pq"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -42,7 +40,7 @@ func TestPutExpenseByID(t *testing.T) {
 		mock.ExpectQuery("SELECT id FROM expenses").WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(1))
 		mock.ExpectQuery("UPDATE expenses").WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(1))
 
-		var w, g Expenses
+		var w, g Expense
 		want := `{
 			"id": 1,
 			"title": "apple smoothie",
@@ -202,10 +200,8 @@ func TestPutExpenseByID(t *testing.T) {
 		con := conDB{db}
 		if assert.NoError(t, con.PutExpenseHandlerByID(c)) {
 
-			fmt.Println(rec.Body.String())
 			assert.Equal(t, http.StatusInternalServerError, rec.Code)
 			assert.Equal(t, want, rec.Body.String())
-
 		}
 	})
 }

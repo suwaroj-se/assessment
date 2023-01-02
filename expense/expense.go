@@ -1,6 +1,6 @@
 package expense
 
-type Expenses struct {
+type Expense struct {
 	ID     int      `json:"id"`
 	Title  string   `json:"title"`
 	Amount float64  `json:"amount"`
