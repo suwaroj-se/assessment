@@ -42,7 +42,7 @@ func TestPutExpenseByID(t *testing.T) {
 		mock.ExpectQuery("SELECT id FROM expenses").WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(1))
 		mock.ExpectQuery("UPDATE expenses").WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(1))
 
-		var w, g Expenses
+		var w, g Expense
 		want := `{
 			"id": 1,
 			"title": "apple smoothie",

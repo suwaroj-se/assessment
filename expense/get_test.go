@@ -42,7 +42,7 @@ func TestGETExpenseByID(t *testing.T) {
 			WillReturnRows(sqlmock.NewRows([]string{"id", "title", "amount", "note", "tags"}).
 				AddRow(1, "strawberry smoothie", 79, "night market promotion discount 10 bath", pq.Array([]string{"food", "beverage"})))
 
-		var w, g Expenses
+		var w, g Expense
 		if err = json.Unmarshal([]byte(expected), &w); err != nil {
 			t.Fatal("Error convert 'expected' with json.Unmarshall", err)
 		}

@@ -19,6 +19,7 @@ func main() {
 	e.Use(middleware.Recover())
 
 	e.POST("/expenses", expense.CreateExpenseHandler)
+	e.GET("/expenses", expense.GetAllExpenseHandler)
 	e.GET("/expenses/:id", expense.GetExpenseHandlerByID)
 	e.PUT("/expenses/:id", expense.PutExpenseHandlerByID)
 
