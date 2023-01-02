@@ -8,7 +8,7 @@ import (
 	_ "github.com/lib/pq"
 )
 
-type Conn struct {
+type conDB struct {
 	DB *sql.DB
 }
 
@@ -16,8 +16,8 @@ func GetDB() *sql.DB {
 	return db
 }
 
-func Connection(db *sql.DB) *Conn {
-	return &Conn{db}
+func Connection(db *sql.DB) *conDB {
+	return &conDB{db}
 }
 
 var db *sql.DB

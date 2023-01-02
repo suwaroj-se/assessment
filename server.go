@@ -18,8 +18,9 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	e.POST("/expenses", expense.CreateExpenseHadler)
-	e.GET("/expenses/:id", expense.GetExpenseHadlerByID)
+	e.POST("/expenses", expense.CreateExpenseHandler)
+	e.GET("/expenses/:id", expense.GetExpenseHandlerByID)
+	e.PUT("/expenses/:id", expense.PutExpenseHandlerByID)
 
 	e.Start(os.Getenv("PORT"))
 

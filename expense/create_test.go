@@ -48,8 +48,8 @@ func TestCreateExpense(t *testing.T) {
 			t.Fatal("Error convert 'want' with json.Unmarshall", err)
 		}
 
-		con := Conn{db}
-		if assert.NoError(t, con.CreateExpenseHadler(c)) {
+		con := conDB{db}
+		if assert.NoError(t, con.CreateExpenseHandler(c)) {
 			if err = json.Unmarshal(rec.Body.Bytes(), &g); err != nil {
 				t.Fatal("Error convert 'rec.Body.Bytes' with json.Unmarshall", err)
 			}
@@ -74,8 +74,8 @@ func TestCreateExpense(t *testing.T) {
 
 		mock.ExpectQuery("INSERT INTO expenses (title, amount, note, tags) values ($1, $2, $3, $4) RETURNING id").WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(1))
 
-		con := Conn{db}
-		if assert.NoError(t, con.CreateExpenseHadler(c)) {
+		con := conDB{db}
+		if assert.NoError(t, con.CreateExpenseHandler(c)) {
 
 			assert.Equal(t, http.StatusInternalServerError, rec.Code)
 		}
@@ -97,8 +97,8 @@ func TestCreateExpense(t *testing.T) {
 
 		mock.ExpectQuery("INSERT INTO expenses").WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(1))
 
-		con := Conn{db}
-		if assert.NoError(t, con.CreateExpenseHadler(c)) {
+		con := conDB{db}
+		if assert.NoError(t, con.CreateExpenseHandler(c)) {
 
 			assert.Equal(t, http.StatusBadRequest, rec.Code)
 		}

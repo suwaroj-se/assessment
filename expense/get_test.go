@@ -12,7 +12,7 @@ import (
 	"testing"
 )
 
-func TestGETExpenseBYID(t *testing.T) {
+func TestGETExpenseByID(t *testing.T) {
 
 	expected := `{
 		"id": 1,
@@ -47,9 +47,9 @@ func TestGETExpenseBYID(t *testing.T) {
 			t.Fatal("Error convert 'expected' with json.Unmarshall", err)
 		}
 
-		con := Conn{db}
+		con := conDB{db}
 		p, _ := strconv.Atoi(c.Param("id"))
-		if assert.NoError(t, con.GetExpenseHadlerByID(c)) {
+		if assert.NoError(t, con.GetExpenseHandlerByID(c)) {
 			if err = json.Unmarshal(rec.Body.Bytes(), &g); err != nil {
 				t.Fatal("Error convert 'rec.Body.Bytes' with json.Unmarshall", err)
 			}
@@ -79,8 +79,8 @@ func TestGETExpenseBYID(t *testing.T) {
 		mock.ExpectQuery("SELECT id, title, amount, note, tags FROM expenses").
 			WillReturnRows(sqlmock.NewRows([]string{"id", "title", "amount", "note", "tags"}))
 
-		con := Conn{db}
-		if assert.NoError(t, con.GetExpenseHadlerByID(c)) {
+		con := conDB{db}
+		if assert.NoError(t, con.GetExpenseHandlerByID(c)) {
 
 			assert.Equal(t, http.StatusNotFound, rec.Code)
 		}
@@ -106,11 +106,10 @@ func TestGETExpenseBYID(t *testing.T) {
 			WillReturnRows(sqlmock.NewRows([]string{"id"}).
 				AddRow(1))
 
-		con := Conn{db}
-		if assert.NoError(t, con.GetExpenseHadlerByID(c)) {
+		con := conDB{db}
+		if assert.NoError(t, con.GetExpenseHandlerByID(c)) {
 
 			assert.Equal(t, http.StatusInternalServerError, rec.Code)
 		}
 	})
-
 }

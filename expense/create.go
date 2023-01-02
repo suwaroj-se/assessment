@@ -7,15 +7,14 @@ import (
 	"github.com/lib/pq"
 )
 
-func (con *Conn) CreateExpenseHadler(c echo.Context) error {
+func (con *conDB) CreateExpenseHandler(c echo.Context) error {
 	var ex Expenses
-	err := c.Bind(&ex)
-	if err != nil {
+	if err := c.Bind(&ex); err != nil {
 		return c.JSON(http.StatusBadRequest, Err{Message: err.Error()})
 	}
 
 	row := con.DB.QueryRow("INSERT INTO expenses (title, amount, note, tags) values ($1, $2, $3, $4) RETURNING id", ex.Title, ex.Amount, ex.Note, pq.Array(ex.Tags))
-	err = row.Scan(&ex.ID)
+	err := row.Scan(&ex.ID)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
 	}
