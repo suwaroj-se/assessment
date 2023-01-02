@@ -59,7 +59,7 @@
 				
 				<option value="file1">github.com/suwaroj-se/assessment/expense/db.go (0.0%)</option>
 				
-				<option value="file2">github.com/suwaroj-se/assessment/expense/get.go (100.0%)</option>
+				<option value="file2">github.com/suwaroj-se/assessment/expense/get.go (94.1%)</option>
 				
 				<option value="file3">github.com/suwaroj-se/assessment/expense/put.go (100.0%)</option>
 				
@@ -85,7 +85,7 @@ import (
 )
 
 func (con *conDB) CreateExpenseHandler(c echo.Context) error <span class="cov8" title="1">{
-        var ex Expenses
+        var ex Expense
         if err := c.Bind(&amp;ex); err != nil </span><span class="cov8" title="1">{
                 return c.JSON(http.StatusBadRequest, Err{Message: err.Error()})
         }</span>
@@ -156,7 +156,7 @@ import (
 
 func (con *conDB) GetExpenseHandlerByID(c echo.Context) error <span class="cov8" title="1">{
         row := con.DB.QueryRow("SELECT id, title, amount, note, tags FROM expenses WHERE id=$1", c.Param("id"))
-        var ex Expenses
+        var ex Expense
         err := row.Scan(&amp;ex.ID, &amp;ex.Title, &amp;ex.Amount, &amp;ex.Note, pq.Array(&amp;ex.Tags))
 
         switch err </span>{
@@ -168,6 +168,24 @@ func (con *conDB) GetExpenseHandlerByID(c echo.Context) error <span class="cov8"
                 return c.JSON(http.StatusInternalServerError, Err{Message: "can't scan expenses:" + err.Error()})</span>
         }
 
+}
+
+func (con *conDB) GetAllExpenseHandler(c echo.Context) error <span class="cov8" title="1">{
+        row, err := con.DB.Query("SELECT id, title, amount, note, tags FROM expenses")
+        if err != nil </span><span class="cov8" title="1">{
+                return c.JSON(http.StatusInternalServerError, Err{Message: "can't query all expenses:" + err.Error()})
+        }</span>
+
+        <span class="cov8" title="1">expenses := []Expense{}
+        for row.Next() </span><span class="cov8" title="1">{
+                var ex Expense
+                if err := row.Scan(&amp;ex.ID, &amp;ex.Title, &amp;ex.Amount, &amp;ex.Note, pq.Array(&amp;ex.Tags)); err != nil </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusInternalServerError, Err{Message: "can't scan user:" + err.Error()})
+                }</span>
+                <span class="cov8" title="1">expenses = append(expenses, ex)</span>
+        }
+
+        <span class="cov8" title="1">return c.JSON(http.StatusOK, expenses)</span>
 }
 </pre>
 		
@@ -182,7 +200,7 @@ import (
 )
 
 func (con *conDB) PutExpenseHandlerByID(c echo.Context) error <span class="cov8" title="1">{
-        var ex Expenses
+        var ex Expense
         if err := c.Bind(&amp;ex); err != nil </span><span class="cov8" title="1">{
                 return c.JSON(http.StatusBadRequest, Err{Message: err.Error()})
         }</span>

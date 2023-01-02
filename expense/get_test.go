@@ -166,7 +166,29 @@ func TestGETAllExpense(t *testing.T) {
 			assert.Equal(t, http.StatusOK, rec.Code)
 			assert.Equal(t, w, g)
 		}
+	})
 
+	t.Run("can't query all expense", func(t *testing.T) {
+		e := echo.New()
+		req := httptest.NewRequest(http.MethodGet, "/", nil)
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetPath("/expenses")
+
+		db, mock, err := sqlmock.New()
+		if err != nil {
+			t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+		}
+		defer db.Close()
+
+		mock.ExpectQuery("SELECT id, title, amount, note, tags FROM expenses")
+
+		con := conDB{db}
+		if assert.NoError(t, con.GetAllExpenseHandler(c)) {
+
+			assert.Equal(t, http.StatusInternalServerError, rec.Code)
+		}
 	})
 
 }
