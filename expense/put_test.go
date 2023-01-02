@@ -149,7 +149,7 @@ func TestPutExpenseByID(t *testing.T) {
 		}
 	})
 
-	t.Run("Put method to update expenses with error row scan", func(t *testing.T) {
+	t.Run("Database server not response, update expenses unsuccess", func(t *testing.T) {
 		e := echo.New()
 		req := httptest.NewRequest(http.MethodPut, "/expenses", strings.NewReader(reqInput))
 		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
