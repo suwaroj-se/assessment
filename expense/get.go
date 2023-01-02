@@ -34,7 +34,7 @@ func (con *conDB) GetAllExpenseHandler(c echo.Context) error {
 	for row.Next() {
 		var ex Expense
 		if err := row.Scan(&ex.ID, &ex.Title, &ex.Amount, &ex.Note, pq.Array(&ex.Tags)); err != nil {
-			return c.JSON(http.StatusInternalServerError, Err{Message: "can't scan user:" + err.Error()})
+			return c.JSON(http.StatusInternalServerError, Err{Message: "can't scan expense:" + err.Error()})
 		}
 		expenses = append(expenses, ex)
 	}

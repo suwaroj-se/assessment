@@ -59,7 +59,7 @@
 				
 				<option value="file1">github.com/suwaroj-se/assessment/expense/db.go (0.0%)</option>
 				
-				<option value="file2">github.com/suwaroj-se/assessment/expense/get.go (94.1%)</option>
+				<option value="file2">github.com/suwaroj-se/assessment/expense/get.go (100.0%)</option>
 				
 				<option value="file3">github.com/suwaroj-se/assessment/expense/put.go (100.0%)</option>
 				
@@ -179,8 +179,8 @@ func (con *conDB) GetAllExpenseHandler(c echo.Context) error <span class="cov8" 
         <span class="cov8" title="1">expenses := []Expense{}
         for row.Next() </span><span class="cov8" title="1">{
                 var ex Expense
-                if err := row.Scan(&amp;ex.ID, &amp;ex.Title, &amp;ex.Amount, &amp;ex.Note, pq.Array(&amp;ex.Tags)); err != nil </span><span class="cov0" title="0">{
-                        return c.JSON(http.StatusInternalServerError, Err{Message: "can't scan user:" + err.Error()})
+                if err := row.Scan(&amp;ex.ID, &amp;ex.Title, &amp;ex.Amount, &amp;ex.Note, pq.Array(&amp;ex.Tags)); err != nil </span><span class="cov8" title="1">{
+                        return c.JSON(http.StatusInternalServerError, Err{Message: "can't scan expense:" + err.Error()})
                 }</span>
                 <span class="cov8" title="1">expenses = append(expenses, ex)</span>
         }
