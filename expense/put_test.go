@@ -92,4 +92,33 @@ func TestPutExpenseByID(t *testing.T) {
 		}
 	})
 
+	t.Run("Missing values to Put method", func(t *testing.T) {
+		e := echo.New()
+		req := httptest.NewRequest(http.MethodPut, "/expenses", strings.NewReader(``))
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetPath("/expenses/:id")
+		c.SetParamNames("id")
+		c.SetParamValues("1")
+
+		db, mock, err := sqlmock.New()
+		if err != nil {
+			t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+		}
+		defer db.Close()
+
+		mock.ExpectQuery("SELECT id FROM expenses").WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(1))
+		mock.ExpectQuery("UPDATE expenses").WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(1))
+
+		want := `{"message":"Missing values:"}` + "\n"
+
+		con := conDB{db}
+		if assert.NoError(t, con.PutExpenseHandlerByID(c)) {
+
+			assert.Equal(t, http.StatusBadRequest, rec.Code)
+			assert.Equal(t, want, rec.Body.String())
+		}
+	})
+
 }

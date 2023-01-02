@@ -61,7 +61,7 @@
 				
 				<option value="file2">github.com/suwaroj-se/assessment/expense/get.go (100.0%)</option>
 				
-				<option value="file3">github.com/suwaroj-se/assessment/expense/put.go (73.3%)</option>
+				<option value="file3">github.com/suwaroj-se/assessment/expense/put.go (80.0%)</option>
 				
 				</select>
 			</div>
@@ -187,7 +187,7 @@ func (con *conDB) PutExpenseHandlerByID(c echo.Context) error <span class="cov8"
                 return c.JSON(http.StatusBadRequest, Err{Message: err.Error()})
         }</span>
 
-        <span class="cov8" title="1">if ex.Title == "" || ex.Amount == 0 || ex.Note == "" || ex.Tags == nil || len(ex.Tags) == 0 </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if ex.Title == "" || ex.Amount == 0 || ex.Note == "" || ex.Tags == nil || len(ex.Tags) == 0 </span><span class="cov8" title="1">{
                 return c.JSON(http.StatusBadRequest, Err{Message: "Missing values:"})
         }</span>
 
