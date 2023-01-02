@@ -7,7 +7,7 @@ import (
 	"github.com/lib/pq"
 )
 
-func (con *Conn) CreateExpenseHandler(c echo.Context) error {
+func (con *conDB) CreateExpenseHandler(c echo.Context) error {
 	var ex Expenses
 	if err := c.Bind(&ex); err != nil {
 		return c.JSON(http.StatusBadRequest, Err{Message: err.Error()})

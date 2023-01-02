@@ -61,6 +61,8 @@
 				
 				<option value="file2">github.com/suwaroj-se/assessment/expense/get.go (100.0%)</option>
 				
+				<option value="file3">github.com/suwaroj-se/assessment/expense/put.go (73.3%)</option>
+				
 				</select>
 			</div>
 			<div id="legend">
@@ -82,15 +84,14 @@ import (
         "github.com/lib/pq"
 )
 
-func (con *Conn) CreateExpenseHadler(c echo.Context) error <span class="cov8" title="1">{
+func (con *conDB) CreateExpenseHandler(c echo.Context) error <span class="cov8" title="1">{
         var ex Expenses
-        err := c.Bind(&amp;ex)
-        if err != nil </span><span class="cov8" title="1">{
+        if err := c.Bind(&amp;ex); err != nil </span><span class="cov8" title="1">{
                 return c.JSON(http.StatusBadRequest, Err{Message: err.Error()})
         }</span>
 
         <span class="cov8" title="1">row := con.DB.QueryRow("INSERT INTO expenses (title, amount, note, tags) values ($1, $2, $3, $4) RETURNING id", ex.Title, ex.Amount, ex.Note, pq.Array(ex.Tags))
-        err = row.Scan(&amp;ex.ID)
+        err := row.Scan(&amp;ex.ID)
         if err != nil </span><span class="cov8" title="1">{
                 return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
         }</span>
@@ -109,7 +110,7 @@ import (
         _ "github.com/lib/pq"
 )
 
-type Conn struct {
+type conDB struct {
         DB *sql.DB
 }
 
@@ -117,8 +118,8 @@ func GetDB() *sql.DB <span class="cov0" title="0">{
         return db
 }</span>
 
-func Connection(db *sql.DB) *Conn <span class="cov0" title="0">{
-        return &amp;Conn{db}
+func Connection(db *sql.DB) *conDB <span class="cov0" title="0">{
+        return &amp;conDB{db}
 }</span>
 
 var db *sql.DB
@@ -153,7 +154,7 @@ import (
         "github.com/lib/pq"
 )
 
-func (con *Conn) GetExpenseHadlerByID(c echo.Context) error <span class="cov8" title="1">{
+func (con *conDB) GetExpenseHandlerByID(c echo.Context) error <span class="cov8" title="1">{
         row := con.DB.QueryRow("SELECT id, title, amount, note, tags FROM expenses WHERE id=$1", c.Param("id"))
         var ex Expenses
         err := row.Scan(&amp;ex.ID, &amp;ex.Title, &amp;ex.Amount, &amp;ex.Note, pq.Array(&amp;ex.Tags))
@@ -164,6 +165,50 @@ func (con *Conn) GetExpenseHadlerByID(c echo.Context) error <span class="cov8" t
         case nil:<span class="cov8" title="1">
                 return c.JSON(http.StatusOK, ex)</span>
         default:<span class="cov8" title="1">
+                return c.JSON(http.StatusInternalServerError, Err{Message: "can't scan expenses:" + err.Error()})</span>
+        }
+
+}
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package expense
+
+import (
+        "database/sql"
+        "net/http"
+
+        "github.com/labstack/echo/v4"
+        "github.com/lib/pq"
+)
+
+func (con *conDB) PutExpenseHandlerByID(c echo.Context) error <span class="cov8" title="1">{
+        var ex Expenses
+        if err := c.Bind(&amp;ex); err != nil </span><span class="cov8" title="1">{
+                return c.JSON(http.StatusBadRequest, Err{Message: err.Error()})
+        }</span>
+
+        <span class="cov8" title="1">if ex.Title == "" || ex.Amount == 0 || ex.Note == "" || ex.Tags == nil || len(ex.Tags) == 0 </span><span class="cov0" title="0">{
+                return c.JSON(http.StatusBadRequest, Err{Message: "Missing values:"})
+        }</span>
+
+        <span class="cov8" title="1">paramID := c.Param("id")
+        row := con.DB.QueryRow("SELECT id FROM expenses WHERE id=$1", paramID)
+        err := row.Scan(&amp;ex.ID)
+
+        switch err </span>{
+        case sql.ErrNoRows:<span class="cov0" title="0">
+                return c.JSON(http.StatusNotFound, Err{Message: "expenses not found"})</span>
+
+        case nil:<span class="cov8" title="1">
+                row := con.DB.QueryRow("UPDATE expenses SET title = $1, amount = $2, note = $3, tags = $4 WHERE id = $5 RETURNING id", ex.Title, ex.Amount, ex.Note, pq.Array(&amp;ex.Tags), paramID)
+
+                if err := row.Scan(&amp;ex.ID); err != nil </span><span class="cov0" title="0">{
+                        return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
+                }</span>
+
+                <span class="cov8" title="1">return c.JSON(http.StatusOK, ex)</span>
+
+        default:<span class="cov0" title="0">
                 return c.JSON(http.StatusInternalServerError, Err{Message: "can't scan expenses:" + err.Error()})</span>
         }
 
