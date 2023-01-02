@@ -2,7 +2,6 @@ package expense
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -10,7 +9,6 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/labstack/echo/v4"
-	// "github.com/lib/pq"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -202,10 +200,8 @@ func TestPutExpenseByID(t *testing.T) {
 		con := conDB{db}
 		if assert.NoError(t, con.PutExpenseHandlerByID(c)) {
 
-			fmt.Println(rec.Body.String())
 			assert.Equal(t, http.StatusInternalServerError, rec.Code)
 			assert.Equal(t, want, rec.Body.String())
-
 		}
 	})
 }
