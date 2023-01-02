@@ -149,4 +149,34 @@ func TestPutExpenseByID(t *testing.T) {
 		}
 	})
 
+	t.Run("Put method to update expenses with error row scan", func(t *testing.T) {
+		e := echo.New()
+		req := httptest.NewRequest(http.MethodPut, "/expenses", strings.NewReader(reqInput))
+		req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+		rec := httptest.NewRecorder()
+		c := e.NewContext(req, rec)
+		c.SetPath("/expenses/:id")
+		c.SetParamNames("id")
+		c.SetParamValues("1")
+
+		db, mock, err := sqlmock.New()
+		if err != nil {
+			t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+		}
+		defer db.Close()
+
+		mock.ExpectQuery("SELECT id FROM expenses").WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(1))
+		mock.ExpectQuery("UPDATE expenses").WillReturnRows(sqlmock.NewRows([]string{"id"}))
+
+		want := `{"message":"sql: no rows in result set"}` + "\n"
+
+		con := conDB{db}
+		if assert.NoError(t, con.PutExpenseHandlerByID(c)) {
+
+			assert.Equal(t, http.StatusInternalServerError, rec.Code)
+			assert.Equal(t, want, rec.Body.String())
+
+		}
+	})
+
 }
