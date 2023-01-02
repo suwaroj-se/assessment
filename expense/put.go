@@ -24,7 +24,7 @@ func (con *conDB) PutExpenseHandlerByID(c echo.Context) error {
 
 	switch err {
 	case sql.ErrNoRows:
-		return c.JSON(http.StatusNotFound, Err{Message: "expenses not found"})
+		return c.JSON(http.StatusNotFound, Err{Message: "Expenses not found"})
 
 	case nil:
 		row := con.DB.QueryRow("UPDATE expenses SET title = $1, amount = $2, note = $3, tags = $4 WHERE id = $5 RETURNING id", ex.Title, ex.Amount, ex.Note, pq.Array(&ex.Tags), paramID)

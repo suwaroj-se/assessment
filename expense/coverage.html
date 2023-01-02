@@ -61,7 +61,7 @@
 				
 				<option value="file2">github.com/suwaroj-se/assessment/expense/get.go (100.0%)</option>
 				
-				<option value="file3">github.com/suwaroj-se/assessment/expense/put.go (80.0%)</option>
+				<option value="file3">github.com/suwaroj-se/assessment/expense/put.go (86.7%)</option>
 				
 				</select>
 			</div>
@@ -196,8 +196,8 @@ func (con *conDB) PutExpenseHandlerByID(c echo.Context) error <span class="cov8"
         err := row.Scan(&amp;ex.ID)
 
         switch err </span>{
-        case sql.ErrNoRows:<span class="cov0" title="0">
-                return c.JSON(http.StatusNotFound, Err{Message: "expenses not found"})</span>
+        case sql.ErrNoRows:<span class="cov8" title="1">
+                return c.JSON(http.StatusNotFound, Err{Message: "Expenses not found"})</span>
 
         case nil:<span class="cov8" title="1">
                 row := con.DB.QueryRow("UPDATE expenses SET title = $1, amount = $2, note = $3, tags = $4 WHERE id = $5 RETURNING id", ex.Title, ex.Amount, ex.Note, pq.Array(&amp;ex.Tags), paramID)
