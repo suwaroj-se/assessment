@@ -12,7 +12,7 @@ import (
 	"testing"
 )
 
-func TestGETExpenseBYID(t *testing.T) {
+func TestGETExpenseByID(t *testing.T) {
 
 	expected := `{
 		"id": 1,
