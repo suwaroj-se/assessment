@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -28,19 +29,19 @@ func main() {
 	e.GET("/expenses/:id", expense.GetExpenseHandlerByID)
 	e.PUT("/expenses/:id", expense.PutExpenseHandlerByID)
 
-	fmt.Println("Please use server.go for main file")
-	fmt.Println("start at port:", os.Getenv("PORT"))
-
 	go func() {
 		if err := e.Start(os.Getenv("PORT")); err != nil && err != http.ErrServerClosed {
 			e.Logger.Fatal("shutting down the server")
 		}
 	}()
+	fmt.Println("Please use server.go for main file")
+	fmt.Println("start at port:", os.Getenv("PORT"))
 
 	shutdown := make(chan os.Signal, 1)
 	signal.Notify(shutdown, os.Interrupt, syscall.SIGTERM)
 
 	<-shutdown
+	log.Println("Server Shutting down ...")
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	if err := e.Shutdown(ctx); err != nil {
