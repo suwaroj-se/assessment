@@ -35,7 +35,6 @@ func TestIntegrationCreateExpense(t *testing.T) {
 	assert.Equal(t, 79.0, ex.Amount)
 	assert.Equal(t, "night market promotion discount 10 bath", ex.Note)
 	assert.Equal(t, []string{"food", "beverage"}, ex.Tags)
-
 }
 
 // [EXP02]
