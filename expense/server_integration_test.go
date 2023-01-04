@@ -14,6 +14,7 @@ import (
 	"testing"
 )
 
+// รัน PORT=":2565" DATABASE_URL=" " go run server.go ก่อน
 // [EXP01]
 func TestIntegrationCreateExpense(t *testing.T) {
 	body := bytes.NewBufferString(`{
